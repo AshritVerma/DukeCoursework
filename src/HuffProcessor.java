@@ -112,7 +112,6 @@ public class HuffProcessor {
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
 		}
-		out.close();
 	}
 
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
@@ -130,8 +129,6 @@ public class HuffProcessor {
 		// write pseudo_eof
 		String c = codings[PSEUDO_EOF];
 		out.writeBits(c.length(), Integer.parseInt(c, 2));
-		// close
-		out.close();
 	}
 
 	/**
