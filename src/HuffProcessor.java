@@ -54,12 +54,25 @@ public class HuffProcessor {
 	}
 
 	private int[] readForCounts(BitInputStream in) {
+		int[] freq = new int[ALPH_SIZE + 1];
+		while (true){
+			int val = in.readBits(BITS_PER_WORD);
+			if (val == -1) break;
+			else {
+				freq[val]++;
+			}
+		}
+
+		freq[PSEUDO_EOF] = 1;
+		return freq;
 	}
 
 	private HuffNode makeTreeFromCounts(int[] counts) {
+
 	}
 
 	private String[] makeCodingsFromTree(HuffNode root) {
+
 	}
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
