@@ -96,8 +96,10 @@ public class HuffProcessor {
 		if (isLeaf(root)) {
 			encodings[root.myValue] = path;
 		}
-		addPaths(root.myLeft, path + "0", encodings);
-		addPaths(root.myRight, path + "1", encodings);
+		else {
+			addPaths(root.myLeft, path + "0", encodings);
+			addPaths(root.myRight, path + "1", encodings);
+		}
 	}
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
@@ -105,10 +107,11 @@ public class HuffProcessor {
 			out.writeBits(1, 1);
 			out.writeBits(BITS_PER_WORD + 1, root.myValue);
 		}
-		out.writeBits(1, 0);
-		writeHeader(root.myLeft, out);
-		writeHeader(root.myRight, out);
-
+		else {
+			out.writeBits(1, 0);
+			writeHeader(root.myLeft, out);
+			writeHeader(root.myRight, out);
+		}
 		out.close();
 	}
 
