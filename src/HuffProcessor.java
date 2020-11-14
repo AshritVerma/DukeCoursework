@@ -86,10 +86,30 @@ public class HuffProcessor {
 	}
 
 	private String[] makeCodingsFromTree(HuffNode root) {
+		String[] encodings = new String[ALPH_SIZE + 1];
+		addPaths(root, "", encodings);
 
+		return encodings;
+	}
+
+	private void addPaths(HuffNode root, String path, String[] encodings) {
+		if (isLeaf(root)) {
+			encodings[root.myValue] = path;
+		}
+		addPaths(root.myLeft, path + "0", encodings);
+		addPaths(root.myRight, path + "1", encodings);
 	}
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
+		if(isLeaf(root)) {
+			out.writeBits(1, 1);
+			out.writeBits(BITS_PER_WORD + 1, root.myValue);
+		}
+		out.writeBits(1, 0);
+		writeHeader(root.myLeft, out);
+		writeHeader(root.myRight, out);
+
+		out.close();
 	}
 
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
@@ -132,12 +152,6 @@ public class HuffProcessor {
 		out.close();
 	}
 
-	private boolean isLeaf(HuffNode curr) {
-		if (curr == null) return false;
-		if (curr.myLeft == null && curr.myRight == null) return true;
-		return false;
-	}
-
 	private HuffNode readTree(BitInputStream in) {
 		int bit = in.readBits(1);
 		if (bit == -1) { throw new HuffException("invalid bit"); }
@@ -150,5 +164,10 @@ public class HuffProcessor {
 			int value = in.readBits(BITS_PER_WORD + 1);
 			return new HuffNode(value, 0, null, null);
 		}
+	}
+
+	private boolean isLeaf(HuffNode curr) {
+		if (curr == null) return false;
+		return curr.myLeft == null && curr.myRight == null;
 	}
 }
