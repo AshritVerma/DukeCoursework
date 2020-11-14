@@ -113,6 +113,15 @@ public class HuffProcessor {
 	}
 
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
+		while (true) {									// until done w file
+			int bits = in.readBits(BITS_PER_WORD);		// read the next set of bits
+			if (bits == -1) break;						// leave loop at end of file
+														// otherwise
+			String code = codings[bits];				// get the encoding for these bits
+			out.writeBits();							// write the encoding for them
+		}
+														// write pseudo_eof
+		out.close();									// close
 	}
 
 	/**
