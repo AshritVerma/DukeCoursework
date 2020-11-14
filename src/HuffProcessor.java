@@ -1,3 +1,4 @@
+import java.util.PriorityQueue;
 
 /**
  * Although this class has a history of several years,
@@ -67,8 +68,21 @@ public class HuffProcessor {
 		return freq;
 	}
 
-	private HuffNode makeTreeFromCounts(int[] counts) {
+	private HuffNode makeTreeFromCounts(int[] freq) {
+		PriorityQueue<HuffNode> pq = new PriorityQueue<>();
+		for (int i = 0; i < freq.length; i++) {
+			pq.add(new HuffNode(i, freq[i], null, null));
+		}
 
+		while(pq.size() > 1) {
+			HuffNode l = pq.remove();
+			HuffNode r = pq.remove();
+			HuffNode t = new HuffNode(0, l.myWeight + r.myWeight, l, r);
+			pq.add(t);
+		}
+
+		HuffNode root = pq.remove();
+		return root;
 	}
 
 	private String[] makeCodingsFromTree(HuffNode root) {
