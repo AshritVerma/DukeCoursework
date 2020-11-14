@@ -14,7 +14,7 @@ public class HuffProcessor {
 
 	public static final int BITS_PER_WORD = 8;
 	public static final int BITS_PER_INT = 32;
-	public static final int ALPH_SIZE = (1 << BITS_PER_WORD); 
+	public static final int ALPH_SIZE = (1 << BITS_PER_WORD);
 	public static final int PSEUDO_EOF = ALPH_SIZE;
 	public static final int HUFF_NUMBER = 0xface8200;
 	public static final int HUFF_TREE  = HUFF_NUMBER | 1;
@@ -74,13 +74,13 @@ public class HuffProcessor {
 			else {
 				if (bits == 0) curr = curr.myLeft;
 				else curr = curr.myRight;
-			}
-			if (isLeaf(curr)) {
-				if (curr.myValue == PSEUDO_EOF)
-					break;
-				else {
-					out.writeBits(8, curr.myValue);
-					curr = root;
+				if (isLeaf(curr)) {
+					if (curr.myValue == PSEUDO_EOF)
+						break;
+					else {
+						out.writeBits(8, curr.myValue);
+						curr = root;
+					}
 				}
 			}
 		}
@@ -102,7 +102,7 @@ public class HuffProcessor {
 			return new HuffNode(0, 0, left, right);
 		}
 		else {
-			int value = in.readBits(9);
+			int value = in.readBits(BITS_PER_WORD + 1);
 			return new HuffNode(value, 0, null, null);
 		}
 	}
